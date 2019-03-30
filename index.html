@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>Cliente</title>
+	<script>
+      $(function(){
+           $('#login').click(function(){
+         $(this).next('#login-content').slideToggle();
+         $(this).toggleClass('active');          
+         });
+      });
+      function ValidaSoloNumeros(){
+      if ((event.keyCode<48) || (event.keyCode > 57))
+      event.returnValue = false;
+      }
+      function txNombres(){
+        if ((event.keyCode !=32) && (event.keyCode <65) || (event.keyCode > 90) && (event.keyCode <97) || (event.keyCode > 122))
+        event.returnValue=false;
+      }
+    </script>
+</head>
+<body>
+
+	
+	<div class="container">
+		<div class="card mb-3" style="max-width: 540px;">
+		  <div class="row no-gutters">
+		    <div class="col-md-4">
+		      <img src="..." class="card-img" alt="...">
+		    </div>
+		    <div class="col-md-8">
+		      <div class="card-body">
+		        <h5 class="card-title">Card title</h5>
+		        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/main2.js"></script>
+
+
+</body>
+</html>
