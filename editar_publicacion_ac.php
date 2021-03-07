@@ -12,7 +12,7 @@ $ide=$_GET["id_publicacion"];
 					//Cambio de Estado la oferta laboral
 
           	if ($Deshabilitar==true) {
-          		header("Location:activas.php");
+          		header("Location:desactivas.php");
           	}
      		   
 

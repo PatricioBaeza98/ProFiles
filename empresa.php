@@ -1,4 +1,12 @@
-<?php ob_start(); include("funciones.php"); error_reporting(0); session_start();$cnn=Conectar(); 
+<?php 
+ob_start(); 
+include("funciones.php");
+session_start();
+if(!isset($_SESSION['$varut'])){
+	header('Location:index.php');
+}
+error_reporting(0); 
+$cnn=Conectar(); 
 $rut=$_SESSION['$varut']; $sql = "SELECT nombre_empresa  FROM usuario WHERE rut='$rut'";
 $rs=mysqli_query($cnn,$sql);  
 if (mysqli_num_rows($rs)!=0){
@@ -7,7 +15,7 @@ if (mysqli_num_rows($rs)!=0){
   }
 }
 $nombre_empresa=$_SESSION['$nombre_empresa'];
-$sql1="SELECT rut,nombre,apellido,correo,telefono,sexo,usua,pass,ruta_imagen from usuario WHERE rut='$rut'";
+$sql1="SELECT rut,nombre,apellido,correo,telefono,sexo,usua,pass,Direccion,ruta_imagen from usuario WHERE rut='$rut'";
 mysqli_query($cnn,$sql1);
 $rs=mysqli_query($cnn,$sql1);  
 $row=mysqli_fetch_assoc($rs);
@@ -35,6 +43,15 @@ $row=mysqli_fetch_assoc($rs);
         event.returnValue=false;
       }
     </script>
+
+
+    <!--<script type="text/javascript">
+        if(history.forward(1)){
+            location.replace(history.forward(1));
+        }
+    </script>  -->
+
+    
 </head>
 <body>
 <?php
@@ -71,10 +88,10 @@ $rut=$_SESSION['$varut'];
 							<a href="seleccionar.php" class="nav-link">Seleccionados</a>
 						</li>
 						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Quitar Seleccionados</a>
+							<a href="eliminarseleccion.php" class="nav-link">Quitar Seleccionados</a>
 						</li>
 						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Reunion</a>
+							<a href="agendarreunion.php" class="nav-link">Reunion</a>
 						</li>
 						<li class="nav-item">
 							<a href="publicar.php" class="nav-link">Publicar Trabajo</a>
@@ -91,7 +108,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -176,6 +193,14 @@ $rut=$_SESSION['$varut'];
 												<div class="row">
 													<div class="col-sm">
 														<div class="form-group">
+														    <label for="exampleFormControlInput1">Dirección</label>
+														    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Dirección" name="direccion" value="<?php echo utf8_encode($row['Direccion']);?>">
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-sm">
+														<div class="form-group">
 														    <label for="exampleFormControlInput1">Sexo</label>
 														    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="sexo" name="sexo" value="<?php echo($row['sexo']);?>" readonly>
 														</div>
@@ -192,8 +217,8 @@ $rut=$_SESSION['$varut'];
 												<div class="row">
 													<div class="col-sm">
 														<div class="form-group">
-														    <label for="exampleFormControlInput1">Contraseña</label>
-														    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="••••••••" name="Contraseña"
+														    <label for="exampleFormControlInput1">Nueva Contraseña</label>
+														    <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="••••••••" name="Contraseña"
 														    value="<?php echo($row['pass']);?>">
 														</div>
 													</div>
@@ -201,8 +226,8 @@ $rut=$_SESSION['$varut'];
 												<div class="row">
 													<div class="col-sm">
 														<div class="form-group">
-														    <label for="exampleFormControlInput1">Contraseña</label>
-														    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="••••••••" name="RContraseña" value="<?php echo($row['pass']);?>">
+														    <label for="exampleFormControlInput1">Repetir Contraseña</label>
+														    <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="••••••••" name="RContraseña" value="<?php echo($row['pass']);?>">
 														</div>
 													</div>
 												</div>
@@ -215,6 +240,24 @@ $rut=$_SESSION['$varut'];
 								    </form>
 								  </div>
 								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php 
+				$rut_admin="SELECT rut as rut_admin FROM usuario WHERE nombre_empresa='admin'";
+				$resultado_admin=mysqli_query($cnn,$rut_admin);  
+				$rescatar=mysqli_fetch_assoc($resultado_admin);
+
+
+				?>
+				<div class="row">
+					<div class="col-10 p-3 mb-2" style="border: 1px solid black; border-radius: 24px;">
+						<center><h5>Comunicarse con el Administrador</h5></center>
+						<div class="row">
+							<div class="col-12">
+								<center><a class="" href="chat_reunion_admin/index.php?admin_user=<?php echo utf8_encode($rescatar['rut_admin']);?>">
+									<img src="img/chat.png" alt=""></a></center>
 							</div>
 						</div>
 					</div>
@@ -237,6 +280,15 @@ $rut=$_SESSION['$varut'];
 
 	<br>
 	<br>
+
+	<?php
+		$sql1991 = "SELECT rut FROM usuario WHERE usuario.nombre_empresa='admin'";
+        $buscar_admin_rut=mysqli_query($cnn,$sql1991);
+        while($rowhola=mysqli_fetch_array($buscar_admin_rut)){
+            $rut_admin = $rowhola['rut'];
+        }
+
+	?>
 
 	<footer class="container">
 		<div class="row border-top py-5">
@@ -264,20 +316,22 @@ $rut=$_SESSION['$varut'];
   			$foto=$_FILES["foto"]["name"];
             $ruta=$_FILES["foto"]["tmp_name"];
             $destino="fotos/".$foto;
+            $foto_de_cliente = $fi["ruta_imagen"];
             copy($ruta,$destino);
   			if($contraseña==$rcontraseña){
-  				if(empty($nombre)||empty($apellido)||empty($correo)||empty($telefono)||empty($contraseña)||empty($rcontraseña)||empty($destino)||empty($ruta)||empty($foto)){
-  					?>
-  					 <script>alert('Todos los campos son obligatorios, deben contener datos')</script>
-  					<?php
-  				}else{
-  					$sql="UPDATE usuario SET nombre='$nombre',apellido='$apellido',correo='$correo',telefono='$telefono',pass='$contraseña',ruta_imagen='$destino' 
+  					if($hay_imagen=$_FILES["foto"]["name"]!=null){
+  						$sql="UPDATE usuario SET nombre='$nombre',apellido='$apellido',correo='$correo',telefono='$telefono',pass='$contraseña',ruta_imagen='$destino' 
+  						WHERE rut='$rut'";
+  					}else{
+  						$sql="UPDATE usuario SET nombre='$nombre',apellido='$apellido',correo='$correo',telefono='$telefono',pass='$contraseña',ruta_imagen='$foto_de_cliente' 
   					WHERE rut='$rut'";
+  					}
+  					
   					mysqli_query($cnn,$sql);
   					if($sql==true){
   						 header("Location:empresa.php");
   					}
-  				}
+  				
   			}else{
   				?>
   				<script>alert('Las contraseñas no coinciden.')</script>

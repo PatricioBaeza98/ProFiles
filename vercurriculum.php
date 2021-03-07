@@ -68,22 +68,25 @@ $rut=$_SESSION['$varut'];
 
 				<div class="collapse navbar-collapse" id="menuNavegacion">
 					<ul class="navbar-nav mr-auto">
-						<li class="nav-item">
-							<a href="principal.php" class="nav-link">Eliminar Publicaciones</a>
-						</li>
-						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Seleccionados</a>
-						</li>
-						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Quitar Seleccionados</a>
-						</li>
-						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Reunion</a>
-						</li>
-						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Nuevo Trabajo</a>
-						</li>
-					</ul>
+            <li class="nav-item">
+              <a href="eliminarpublicacion.php" class="nav-link">Eliminar Publicaciones</a>
+            </li>
+            <li class="nav-item">
+              <a href="seleccionar.php" class="nav-link">Seleccionados</a>
+            </li>
+            <li class="nav-item">
+              <a href="eliminarseleccion.php" class="nav-link">Quitar Seleccionados</a>
+            </li>
+            <li class="nav-item">
+              <a href="agendarreunion.php" class="nav-link">Reunion</a>
+            </li>
+            <li class="nav-item">
+              <a href="publicar.php" class="nav-link">Publicar Trabajo</a>
+            </li>
+            <li class="nav-item">
+              <a href="miperfil.php" class="nav-link">Perfil</a>
+            </li>
+          </ul>
 
 					<form class="form-inline my-2 my-lg-0" method="post">
 						<button class="btn btn-primary my-2 my-sm-0" type="submit" name="btncerrar">Cerrar Sesión</button>
@@ -92,7 +95,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -101,22 +104,39 @@ $rut=$_SESSION['$varut'];
 	</header>
 	<br>
 
+<?php
+
+$traerp= "SELECT id,prueba,especialidad FROM pruebas";
+  $rs4=mysqli_query($cnn,$traerp);
+  while($row4=mysqli_fetch_array($rs4)){
+    $id=$row4["id"];
+    $prueba=$row4["prueba"];
+    $especialidad=$row4["especialidad"];
+  }
+
+?>
+
+
 	<?php 
       $rut=$_SESSION['$varut'];
-      $consulta = "SELECT ofertas_laborales.titulo,ofertas_laborales.id
-        FROM ofertas_laborales
-        WHERE (rut_empresa='$rut')";
+      $consulta = "SELECT ofertas_laborales.titulo,ofertas_laborales.id FROM ofertas_laborales WHERE (rut_empresa='$rut')";
       $rs2=mysqli_query($cnn,$consulta);
   ?>
-
+     
   <br>
         <?php 
          $idd=$_GET['id'];
          $rutt = $_GET['rut'];
          $resu = "SELECT usuario.nombre,usuario.apellido,usuario.correo,usuario.telefono,usuario.sexo,usuario.ruta_imagen,cv.salario,cv.provincia,
-            cv.ciudad,cv.calle,cv.colegio,cv.liceo,cv.instituto,cv.titulo,cv.nombre_empresa,cv.actividad_empresa,cv.puesto,cv.nivel_experiencia,cv.area_puesto,cv.subarea,cv.responsabilidades,cv.idioma,cv.nivel_oral,cv.nivel_escrito,cv.desde_mes,cv.desde_anio,cv.hasta_mes,cv.hasta_anio,cv.idioma,cv.nivel_oral,cv.nivel_escrito,cv.nacionalidad,cv.dia,cv.anio,cv.mes,test.respuesta,test.id,cv.prefijo_cel
-          FROM cv,usuario,test
-          WHERE (usuario.rut=cv.rut) AND (test.cv=cv.id) AND (cv.rut='$rutt')";  
+            cv.ciudad,cv.calle,cv.colegio,cv.liceo,cv.instituto,cv.titulo,cv.nombre_empresa,
+            cv.actividad_empresa,cv.puesto,cv.nivel_experiencia,cv.area_puesto,cv.subarea,
+            cv.responsabilidades,cv.idioma,cv.nivel_oral,cv.nivel_escrito,cv.desde_mes,
+            cv.desde_anio,cv.hasta_mes,cv.hasta_anio,cv.idioma,cv.nivel_oral,
+            cv.nivel_escrito,cv.nacionalidad,cv.dia,cv.anio,cv.mes,test.respuesta,
+            test.id,cv.prefijo_cel
+             FROM  usuario,cv,test
+             where (usuario.rut=cv.rut) AND (cv.id=test.cv) AND (cv.rut='$rutt')
+          ";
           $rs3=mysqli_query($cnn,$resu);
           while ($row3=mysqli_fetch_array($rs3)){
             $nombre=$row3["nombre"];
@@ -155,23 +175,27 @@ $rut=$_SESSION['$varut'];
             $nivel_escrito=$row3["nivel_escrito"];
             $respuesta=$row3["respuesta"];
             $test=$row3["id"];
+            //$nombre_curso=$row3["nombre_curso"].$row3["nombre_curso"];
+            //$nota_curso=$row3["nota_curso"];
         ?>
-        <div class="container">
-          <a href="seleccionarporoferta.php" class="btn btn-primary btn-lg">Volver</a>
-            <div class="row shadow-lg p-3 mb-5 bg-white rounded">
+        <form method="post">
+<div class="container">
+                <div class="shadow-lg p-3 mb-5 bg-white rounded">
                 <div class="col-12 ">
                   <div class="row">
                     <div class="col-12">
-                      <h3 class="text-center">Curriculum Vitae</h3></div>
+                      <h3 class="text-center">Curriculum Vitae</h3>
+                    </div>
                   </div>
+                  <br>
                   <div class="row">
-                    <div class="col-6 p-3 mb-2 bg-primary text-white">
+                    <div class="col-3 p-1 mb-2 bg-primary text-white">
                       <h5>Datos Personales: </h5>
                     </div>
                   </div>
-                   <hr>
+                   
                   <div class="row">
-                    <div class="col 6  ">
+                    <div class="col 6">
                       <h6><?php echo utf8_encode($nombre) ?> <?php echo utf8_encode($apellido) ?></h6>
                       <h6><b>Tel: </b>(+<?php echo $pre ?>) <?php echo utf8_encode($telefono) ?></h6>
                       <h6><b>Dirección:</b> <?php echo utf8_encode($ciudad) ?>  <?php echo utf8_encode($calle) ?></h6>
@@ -185,13 +209,15 @@ $rut=$_SESSION['$varut'];
                       <img src="<?php echo $foto; ?>" style="border:2px solid; width: 200px; height: 200px; ">
                     </div>
                   </div> 
-                  <br>
+                  <hr>
+
+
+
                   <div class="row">
-                    <div class="col-3 p-3 mb-2 bg-primary text-white">
+                    <div class="col-3 p-1 mb-2 bg-primary text-white">
                       <h5>Educación: </h5>
                     </div>
-                  </div>
-                  <hr>
+                  </div>     
                   <div class="row">
                     <div class="col-12">
                       <h6><b>Colegio:</b> <?php echo utf8_encode($colegio) ?></h6>
@@ -200,12 +226,15 @@ $rut=$_SESSION['$varut'];
                       <h6><b>Titulo:</b> <?php echo utf8_encode($titulo) ?></h6>
                     </div>
                   </div>
+                  <hr>
+
+
+
                   <div class="row">
-                    <div class="col-6 p-3 mb-2 bg-primary text-white">
+                    <div class="col-3 p-1 mb-2 bg-primary text-white">
                       <h5>Experiencia Laboral: </h5>
                     </div>
-                  </div>
-                  <hr>
+                  </div>          
                   <div class="row">
                     <div class="col-12">
                       <h6><b>Empresa: </b><?php echo utf8_encode($nombre_empresa) ?></h6>
@@ -218,12 +247,15 @@ $rut=$_SESSION['$varut'];
                       <h6><b>Responsabilidades: </b><?php echo utf8_encode($responsabilidades) ?></h6>
                     </div>
                   </div>
+                  <hr>
+
+
+
                   <div class="row">
-                    <div class="col-6 p-3 mb-2 bg-primary text-white">
+                    <div class="col-3 p-1 mb-2 bg-primary text-white">
                       <h5>Idiomas: </h5>
                     </div>
                   </div>
-                  <hr>
                   <div class="row">
                     <div class="col-12">
                       <h6><b>Idioma: </b><?php echo utf8_encode($idioma) ?></h6>
@@ -231,48 +263,93 @@ $rut=$_SESSION['$varut'];
                       <h6><b>Nivel Escrito: </b><?php echo utf8_encode($nivel_escrito) ?></h6>
                     </div>
                   </div>
+                  <hr>
+
+
+
                   <div class="row">
-                    <div class="col-6 p-3 mb-2 bg-primary text-white">
-                      <h5>Nota Test: </h5>
+                    <div class="col-3 p-1 mb-2 bg-primary text-white">
+                      <h5>Test de Personalidad: </h5>
                     </div>
                   </div>
-                  <hr>
                   <div class="row">
                     <div class="col-12">
                       <h6><b>Nota:</b> <?php echo utf8_encode($respuesta) ?></h6>
                     </div>
                   </div>
+                  <hr>
+                   <div class="row">
+                    <div class="col-6 p-1 mb-2 bg-primary text-white">
+                      <h5>Cursos PROfiles realizados: </h5>
+                    </div>
+                  </div>
                   <div class="row">
-                    <div class="col-6 p-3 mb-2 bg-primary text-white">
-                      <h5>Enviar Prueba: </h5>
+                    <div class="col-12">
+                      <h6>
+                        <?php
+                         $rutt = $_GET['rut'];
+                        $traer_cursos="SELECT IFNULL(cursos.nombre_curso,'No tienes cursos realizados') as nombre_curso,IFNULL(cursos.nota_curso,'No tienes cursos realizados') as nota_curso,aprobado 
+                        FROM cursos right join cv on (cursos.cv=cv.id)
+                        WHERE (cv.rut='$rutt')";
+                         $resultado_curso=mysqli_query($cnn,$traer_cursos);  
+                         while($row5=mysqli_fetch_array($resultado_curso)){
+                          $traerCur = $row5["nombre_curso"];
+                          $nota_curso  = $row5["nota_curso"];
+                         ?>
+                        <b>Curso:</b> <?php echo utf8_encode($traerCur) ?>
+                      </h6>
+                      <h6><b>NOTA:</b> <?php echo utf8_encode($nota_curso) ?></h6>
+                      <?php } ?>
                     </div>
                   </div>
                   <hr>
-                  <form method="post">
-                    <div class="row">
-                      <div class="col-12 center">
-                        <input type="text" class="form-control" name="enviarprueba" placeholder="Pegar link de la prueba">
+
+
+
+                  <div class="row">
+                    <div class="col-3 p-1 mb-2 bg-primary text-white">
+                      <h5>Seleccionar Prueba: </h5>
+                    </div>
+                  </div>
+
+                      <?php 
+                      
+                      $traerofertat = "SELECT id,prueba,especialidad FROM pruebas";
+                      $rs3t=mysqli_query($cnn,$traerofertat);
+                      ?>
+                      <div class="row">
+                        <div class="input-field col-12 m6">
+                          <select class="form-control" name="enviarprueba" id="prueba">
+                            <option value="" disabled selected>Seleccionar Prueba</option>
+                        <?php while ($row3t = mysqli_fetch_array($rs3t)){
+                        $id_t = $row3t["id"];
+                        $prueba_t=$row3t["prueba"];
+                        $especialidad_t=$row3t["especialidad"];
+                      ?>
+                      <option  value="<?php echo ($id_t);?>"><?php echo ($especialidad_t);?></option>
+                      <?php
+                      }
+                      ?>     
+                      </select>
                       </div>
-                   </div>
-                   <br>
-                   <br>
-                    <div class="row">
-                    <div class="col-6 p-3 mb-2 bg-primary text-white">
-                      <h5>Enviar Oferta: </h5>
                     </div>
-                  </div>
-                  <hr>
+                    <hr>
+
+
+
+                   <br>
+                   <br>
+
                    <div class="row">
                      <div class="col-12">
                        <button class="btn btn-primary btn-lg btn-block" type="submit"  name="EnviarSeleccion">Enviar
                         </button>
                      </div>
                    </div>
-                  </form>
-                  </form>
                 </div>
               </div>
               </div>
+            </form>
             <?php   
         }
         if(isset($_POST["EnviarSeleccion"])){
@@ -292,7 +369,7 @@ $rut=$_SESSION['$varut'];
                                                     FROM seleccion
         WHERE (id_oferta='$idd') AND (rut_cv='$rutt') AND (rut_empresa='$rut')"));
          if ($total==1){
-         echo "<script>alert('Ya enviamos esta misma oferta laboral al seleccionado por favor, seleccione otro o cancele la selección')</script>";
+         echo "<script>alert('Ya enviamos esta misma oferta laboral al seleccionado, por favor seleccione otro o cancele la selección')</script>";
          }else{
            $registrar="INSERT INTO seleccion VALUES (null,'$rutt','$rut','$link','NULL','NULL','$idd')";
            mysqli_query($cnn,$registrar);

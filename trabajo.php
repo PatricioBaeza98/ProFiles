@@ -1,8 +1,11 @@
 <?php
 ob_start();
+session_start();
+if(!isset($_SESSION['$varut'])){
+	header('Location:index.php');
+}
 include("funciones.php");
- error_reporting(0); 
- session_start();
+error_reporting(0); 
 $cnn=Conectar();
 $rut=$_SESSION['$varut'];
 $sql="SELECT rut,nombre,apellido,correo,telefono,sexo,usua,pass,ruta_imagen from usuario WHERE rut='$rut'";
@@ -83,7 +86,7 @@ $rut=$_SESSION['$varut'];
                   if (isset($_POST["btncerrar"])) {
                     session_start();
                     session_destroy();
-                    header("Location:principal.php");
+                    header("Location:index.php");
                     }
                 ?>
         </div>
@@ -92,10 +95,10 @@ $rut=$_SESSION['$varut'];
   </header>
 	<br>
 	 <?php 
-			$id_trabajo= $_GET['id_de_trabajo']; 
-		    $sql_tra=" SELECT COUNT(envios_curriculum.oferta_laboral) as solicitantes,ofertas_laborales.id,ofertas_laborales.rut_empresa,ofertas_laborales.titulo,ofertas_laborales.nombre_empresa,ofertas_laborales.descripcion_trabajo,ofertas_laborales.lugar_trabajo,ofertas_laborales.fecha_publicacion,ofertas_laborales.salario,ofertas_laborales.tipo_puesto,ofertas_laborales.area,usuario.ruta_imagen,ofertas_laborales.Experiencia,ofertas_laborales.Tipo_empleo,ofertas_laborales.Funciones
-                  FROM ofertas_laborales,usuario,envios_curriculum
-                  WHERE(ofertas_laborales.rut_empresa=usuario.rut) AND (ofertas_laborales.id=envios_curriculum.oferta_laboral) AND (ofertas_laborales.id='$id_trabajo')";
+		$id_trabajo= $_GET['id_de_trabajo']; 
+		$sql_tra=" SELECT COUNT(envios_curriculum.oferta_laboral) as solicitantes,ofertas_laborales.id,ofertas_laborales.rut_empresa,ofertas_laborales.titulo,ofertas_laborales.nombre_empresa,ofertas_laborales.descripcion_trabajo,ofertas_laborales.lugar_trabajo,ofertas_laborales.fecha_publicacion,ofertas_laborales.salario,ofertas_laborales.tipo_puesto,ofertas_laborales.area,usuario.ruta_imagen,ofertas_laborales.Experiencia,ofertas_laborales.Tipo_empleo,ofertas_laborales.Funciones
+        FROM ofertas_laborales,usuario,envios_curriculum
+        WHERE(ofertas_laborales.rut_empresa=usuario.rut) AND (ofertas_laborales.id=envios_curriculum.oferta_laboral) AND (ofertas_laborales.id='$id_trabajo')";
         mysqli_query($cnn,$sql_tra);
         $res1=mysqli_query($cnn,$sql_tra);           
         while($fila=mysqli_fetch_assoc($res1)){
@@ -136,12 +139,28 @@ $rut=$_SESSION['$varut'];
 									} ?>
 								</div>
 							</div>
+							<?php 
+							$rut=$_SESSION['$varut'];
+		 					$id_trabajo= $_GET['id_de_trabajo']; 
+							$ver_postulacion=mysqli_num_rows(mysqli_query($cnn,"SELECT rut_postulante FROM envios_curriculum WHERE (oferta_laboral='$id_trabajo') AND (rut_postulante='$rut')"));
+							if($ver_postulacion==1){
+								?>
+								<div class="row">
+								<div class="col-6"></div>
+								<div class="col-6">
+									<input type="submit" name="solicitar" value="Se postulo correctamente" class="btn btn-outline-primary" style="float: right;" disabled>
+								</div>
+							</div>
+								<?php
+							}else{
+							?>
 							<div class="row">
 								<div class="col-6"></div>
 								<div class="col-6">
 									<input type="submit" name="solicitar" value="Solicitar Empleo" class="btn btn-outline-primary" style="float: right;">
 								</div>
 							</div>
+							<?php } ?>
 							<hr>
 							<div class="row">
 								<div class="col-8">
@@ -194,6 +213,7 @@ $rut=$_SESSION['$varut'];
 			</div>
 		</div>
 	</form>
+	
 	<?php } 
 	if ($_POST['solicitar']=="Solicitar Empleo") {
 		$id_trabajo= $_GET['id_de_trabajo']; 
@@ -204,11 +224,13 @@ $rut=$_SESSION['$varut'];
 		if($total==0){
 			?>
 			<script>alert('<?php echo $_SESSION['$vanombre']?>, Usted aun no completa su curriculum, para poder postular a esta oferta por favor complete su curriculum')</script>
+			<script type="text/javascript">window.location="curriculum.php";</script>
 			<?php
 		}else{
 			if($total1==0){
 				?>
 				<script>alert('<?php echo $_SESSION['$vanombre']?>, Aun no completa su test, por favor complete su test antes de enviar su curriculum.')</script>
+				<script type="text/javascript">window.location="test.php";</script>
 				<?php
 			}else{
 				if($total2==1){
@@ -237,8 +259,19 @@ $rut=$_SESSION['$varut'];
                             $test = $fil["id"];
                     }
                     //termino de traer Datos
+                    $id_trabajo= $_GET['id_de_trabajo']; 
                     $registrar="INSERT INTO envios_curriculum (rut_postulante,rut_empresa,nota_test,cv,oferta_laboral) VALUES ('$rut','$rut_empresa','$test','$cv','$id_trabajo')";
                      mysqli_query($cnn,$registrar);
+                     echo "<meta HTTP-EQUIV='refresh' CONTENT='5 ;URL=trabajo.php?=id_de_trabajo=$id_trabajo'>";
+                     if($registrar==true){
+                     	echo "<script>alert('Se postulo correctamente a la oferta: $titulo2')</script>";
+                     	
+                     	 ?>
+							<script type="text/javascript">window.location="cliente.php";</script>
+                     	 <?php 
+                     }
+
+
 				}
 			}
 		}

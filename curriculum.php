@@ -1,8 +1,11 @@
 <?php
 ob_start();
+session_start();
+if(!isset($_SESSION['$varut'])){
+	header('Location:index.php');
+}
 include("funciones.php");
- error_reporting(0); 
- session_start();
+error_reporting(0); 
 $cnn=Conectar();
 $rut=$_SESSION['$varut'];
 $sql1="SELECT usuario.nombre as nom, usuario.apellido as ape,usuario.correo as corre,usuario.telefono as tel,usuario.sexo as sex from usuario where rut='$rut'";
@@ -85,6 +88,9 @@ $rut=$_SESSION['$varut'];
 						<li class="nav-item">
 							<a href="reunion.php" class="nav-link">Mis Reuniones</a>
 						</li>
+						<li class="nav-item">
+							<a href="cursos.php" class="nav-link">Cursos PROFILES</a>
+						</li>
 					</ul>
 
 					<form class="form-inline my-2 my-lg-0" method="post">
@@ -94,7 +100,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -237,7 +243,7 @@ $rut=$_SESSION['$varut'];
 		<div class="row">
 			<div class="col-12">
 				<label for="first_name">Indicar salario bruto pretendido *</label>
-				<input type="text" name="salario" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value="<?php echo($row['salario']);?>" maxlength="14"  minlength="10" onkeypress="ValidaSoloNumeros()" >
+				<input type="text" name="salario" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value="<?php echo($row['salario']);?>" maxlength="13"  minlength="6" onkeypress="ValidaSoloNumeros()" >
 			</div>
 		</div>
 		<br>
@@ -251,7 +257,7 @@ $rut=$_SESSION['$varut'];
 		<div class="row">
 			<div class="col-4">
 				<label for="first_name">Teléfono celular *</label>
-				<input type="text" placeholder="Prefijo" id="first_name" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="prefijo_celular" value="<?php echo($row['pre']);?>" maxlength="2">
+				<input type="text" placeholder="Prefijo" id="first_name" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="prefijo_celular" value="<?php echo($row['pre']);?>" maxlength="2" minlength="2">
 			</div>
 			<div class="col-8">
 				<input type="text" placeholder="Número" id="first_name" class="form-control gen" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="numero_celular" value="<?php echo($row1['tel']);?>" maxlength="9" minlength="9" disabled>
@@ -269,7 +275,7 @@ $rut=$_SESSION['$varut'];
 			<div class="col-12">
 				<label for="first_name">Ciudad *</label>
 				<select  id="regiones" name="ciudad"  class="form-control">
-			        <option value="<?php echo($row['ciudad']);?>"><?php echo($row['ciudad']);?></option>
+			        <option value="<?php echo utf8_encode($row['ciudad']);?>"><?php echo utf8_encode($row['ciudad']);?></option>
 				</select>
 			</div>
 		</div>
@@ -286,7 +292,7 @@ $rut=$_SESSION['$varut'];
 		<div class="row">
 			<div class="col-12">
 				<label for="first_name">Dirección *</label>
-				<input type="text" placeholder="Dirección" id="first_name" class="form-control" name="direccion" value="<?php echo($row['calle']);?>" onkeypress="txNombres()" maxlength="30">
+				<input type="text" placeholder="Dirección" id="first_name" class="form-control" name="direccion" value="<?php echo(utf8_encode($row['calle']));?>" onkeypress="txNombres()" maxlength="30">
 				<span class="helper-text" data-error="wrong" data-success="right">No es necesaria la dirección exacta.</span>
 			</div>
 		</div>
@@ -353,7 +359,7 @@ $rut=$_SESSION['$varut'];
 		<div class="row">
 			<div class="col-6">
 				<label for="first_name">Puesto*</label>
-				<input type="text" placeholder="Puesto de la empresa" id="first_name" class="form-control" name="puesto" value="<?php echo($row['puesto']);?>" onkeypress="txNombres()" maxlength="100">
+				<input type="text" placeholder="Puesto de la empresa" id="first_name" class="form-control" name="puesto" value="<?php echo($row['puesto']);?>" onkeypress="txNombres()" minlength="4" maxlength="30">
 			</div>
 			<div class="col-6">
 				<label for="first_name">Nivel de Experiencia *</label>
@@ -426,7 +432,7 @@ $rut=$_SESSION['$varut'];
 		<div class="row">
 			<div class="col-12">
 				<label for="first_name">Descripción de responsabilidades *</label>
-				<textarea name="descripcion_responsabilidad" class="form-control" id="textarea1" cols="30" rows="5"><?php echo utf8_encode($row['responsabilidades']);?></textarea>
+				<textarea name="descripcion_responsabilidad" style="resize: none;" class="form-control" id="textarea1" cols="30" rows="5"><?php echo utf8_encode($row['responsabilidades']);?></textarea>
 			</div>
 		</div>
 		<br>
@@ -516,36 +522,36 @@ $rut=$_SESSION['$varut'];
        <?php 
 
   }else{
-		$dia=$_POST["datosdia"];
-		$mes=$_POST["datosmes"];
-		$año=$_POST["datosaño"];
-		$nacionalidad=$_POST["datospais"];
-		$estado_civil=$_POST["datosestadocivil"];
-		$salario=$_POST["salario"];
-		$prefijo_celular=$_POST["prefijo_celular"];
-		$provincia=$_POST["provincia"];
-		$ciudad=$_POST["ciudad"];
-		$calle=$_POST["direccion"];
-		$colegio=$_POST["colegio"];
-		$liceo=$_POST["liceo"];
-		$instituto=$_POST["instituto"];
-		$titulo=$_POST["titulo"];
-		$nombre_empresa=$_POST["nombre_empresa"];
-		$actividad_empresa=$_POST["actividad_empresa"];
-		$puesto=$_POST["puesto"];
-		$nivel_experiencia=$_POST["nivel_experiencia"];
-		$desde_mes=$_POST["desde_mes"];
-		$desde_año=$_POST["desde_año"];
-		$hasta_mes=$_POST["hasta_mes"];
-		$hasta_año=$_POST["hasta_año"];
-		$area_puesto=$_POST["area_puesto"];
-		$correo=$_POST["email"];
-		$subarea=$_POST["subarea"];
-		$descripcion_responsabilidad=$_POST["descripcion_responsabilidad"];
+		$dia=utf8_decode($_POST["datosdia"]);
+		$mes=utf8_decode($_POST["datosmes"]);
+		$año=utf8_decode($_POST["datosaño"]);
+		$nacionalidad=utf8_decode($_POST["datospais"]);
+		$estado_civil=utf8_decode($_POST["datosestadocivil"]);
+		$salario=utf8_decode($_POST["salario"]);
+		$prefijo_celular=utf8_decode($_POST["prefijo_celular"]);
+		$provincia=utf8_decode($_POST["provincia"]);
+		$ciudad=utf8_decode($_POST["ciudad"]);
+		$calle=utf8_decode($_POST["direccion"]);
+		$colegio=utf8_decode($_POST["colegio"]);
+		$liceo=utf8_decode($_POST["liceo"]);
+		$instituto=utf8_decode($_POST["instituto"]);
+		$titulo=utf8_decode($_POST["titulo"]);
+		$nombre_empresa=utf8_decode($_POST["nombre_empresa"]);
+		$actividad_empresa=utf8_decode($_POST["actividad_empresa"]);
+		$puesto=utf8_decode($_POST["puesto"]);
+		$nivel_experiencia=utf8_decode($_POST["nivel_experiencia"]);
+		$desde_mes=utf8_decode($_POST["desde_mes"]);
+		$desde_año=utf8_decode($_POST["desde_año"]);
+		$hasta_mes=utf8_decode($_POST["hasta_mes"]);
+		$hasta_año=utf8_decode($_POST["hasta_año"]);
+		$area_puesto=utf8_decode($_POST["area_puesto"]);
+		$correo=utf8_decode($_POST["email"]);
+		$subarea=utf8_decode($_POST["subarea"]);
+		$descripcion_responsabilidad=utf8_decode($_POST["descripcion_responsabilidad"]);
 		$idioma_lengua=utf8_decode($_POST["idioma_lengua"]);
-		$idioma_nivel_oral=$_POST["idioma_nivel_oral"];
-		$idioma_nivel_escrito=$_POST["idioma_nivel_escrito"];
-		if(empty($dia)||empty($mes)||empty($año)||empty($nacionalidad)||empty($estado_civil)||empty($salario)||empty($prefijo_celular)||empty($provincia)||empty($ciudad)||empty($calle)||empty($colegio)||empty($liceo)||empty($instituto)||empty($titulo)||empty($nombre_empresa)||empty($actividad_empresa)||empty($puesto)||empty($nivel_experiencia)||empty($desde_mes)||empty($desde_año)||empty($hasta_mes)||empty($hasta_año)||empty($area_puesto)||empty($subarea)||empty($descripcion_responsabilidad)||empty($idioma_lengua)||empty($idioma_nivel_oral)||empty($idioma_nivel_escrito))
+		$idioma_nivel_oral=utf8_decode($_POST["idioma_nivel_oral"]);
+		$idioma_nivel_escrito=utf8_decode($_POST["idioma_nivel_escrito"]);
+		if(empty($dia)||empty($mes)||empty($año)||empty($nacionalidad)||empty($estado_civil)||empty($salario)||empty($prefijo_celular)||empty($provincia)||empty($ciudad)||empty($calle)||empty($colegio)||empty($liceo)||empty($instituto)||empty($titulo)||empty($nombre_empresa)||empty($actividad_empresa)||empty($puesto)||empty($nivel_experiencia)||empty($desde_mes)||empty($desde_año)||empty($hasta_mes)||empty($hasta_año)||empty($area_puesto)||empty($subarea)||empty($descripcion_responsabilidad)||empty($idioma_lengua)||empty($idioma_nivel_oral)||empty($idioma_nivel_escrito) )
 		{
 			?>
 			<script>alert('Todos los campos son obligatorios, deben contener datos')</script>
@@ -554,7 +560,7 @@ $rut=$_SESSION['$varut'];
 		$sql="INSERT into cv  VALUES (null,'$rut','$dia','$mes','$año','$nacionalidad','$estado_civil','$salario','$prefijo_celular','$provincia','$ciudad','$calle','$colegio','$liceo','$instituto','$titulo','$nombre_empresa','$actividad_empresa','$puesto','$nivel_experiencia','$desde_mes','$desde_año','$hasta_mes','$hasta_año','$area_puesto','$subarea','$descripcion_responsabilidad','$idioma_lengua','$idioma_nivel_oral','$idioma_nivel_escrito')";
 		mysqli_query($cnn,$sql);
 		//if($sql==true){
-			header("Location:curriculumvitae.php");
+			header("Location:curriculum.php");
 		//}
 		echo "$sql";
 		echo "<script>alert('Datos Guardados')</script>";
@@ -564,36 +570,36 @@ $rut=$_SESSION['$varut'];
 	?>
 	<?php 
 	if(isset($_POST["btnActualizar"])){
-		$dia=$_POST["datosdia"];
-		$mes=$_POST["datosmes"];
-		$año=$_POST["datosaño"];
-		$nacionalidad=$_POST["datospais"];
-		$estado_civil=$_POST["datosestadocivil"];
-		$salario=$_POST["salario"];
-		$prefijo_celular=$_POST["prefijo_celular"];
-		$provincia=$_POST["provincia"];
-		$ciudad=$_POST["ciudad"];
-		$calle=$_POST["direccion"];
-		$colegio=$_POST["colegio"];
-		$liceo=$_POST["liceo"];
-		$instituto=$_POST["instituto"];
-		$titulo=$_POST["titulo"];
-		$nombre_empresa=$_POST["nombre_empresa"];
-		$actividad_empresa=$_POST["actividad_empresa"];
-		$puesto=$_POST["puesto"];
-		$nivel_experiencia=$_POST["nivel_experiencia"];
-		$paiss=$_POST["Pais"];
-		$desde_mes=$_POST["desde_mes"];
-		$desde_año=$_POST["desde_año"];
-		$hasta_mes=$_POST["hasta_mes"];
-		$hasta_año=$_POST["hasta_año"];
-		$area_puesto=$_POST["area_puesto"];
-		$correo=$_POST["email"];
-		$subarea=$_POST["subarea"];
+		$dia=utf8_decode($_POST["datosdia"]);
+		$mes=utf8_decode($_POST["datosmes"]);
+		$año=utf8_decode($_POST["datosaño"]);
+		$nacionalidad=utf8_decode($_POST["datospais"]);
+		$estado_civil=utf8_decode($_POST["datosestadocivil"]);
+		$salario=utf8_decode($_POST["salario"]);
+		$prefijo_celular=utf8_decode($_POST["prefijo_celular"]);
+		$provincia=utf8_decode($_POST["provincia"]);
+		$ciudad=utf8_decode($_POST["ciudad"]);
+		$calle=utf8_decode($_POST["direccion"]);
+		$colegio=utf8_decode($_POST["colegio"]);
+		$liceo=utf8_decode($_POST["liceo"]);
+		$instituto=utf8_decode($_POST["instituto"]);
+		$titulo=utf8_decode($_POST["titulo"]);
+		$nombre_empresa=utf8_decode($_POST["nombre_empresa"]);
+		$actividad_empresa=utf8_decode($_POST["actividad_empresa"]);
+		$puesto=utf8_decode($_POST["puesto"]);
+		$nivel_experiencia=utf8_decode($_POST["nivel_experiencia"]);
+		$paiss=utf8_decode($_POST["Pais"]);
+		$desde_mes=utf8_decode($_POST["desde_mes"]);
+		$desde_año=utf8_decode($_POST["desde_año"]);
+		$hasta_mes=utf8_decode($_POST["hasta_mes"]);
+		$hasta_año=utf8_decode($_POST["hasta_año"]);
+		$area_puesto=utf8_decode($_POST["area_puesto"]);
+		$correo=utf8_decode($_POST["email"]);
+		$subarea=utf8_decode($_POST["subarea"]);
 		$descripcion_responsabilidad=utf8_decode($_POST["descripcion_responsabilidad"]);
 		$idioma_lengua=utf8_decode($_POST["idioma_lengua"]);
-		$idioma_nivel_oral=$_POST["idioma_nivel_oral"];
-		$idioma_nivel_escrito=$_POST["idioma_nivel_escrito"];
+		$idioma_nivel_oral=utf8_decode($_POST["idioma_nivel_oral"]);
+		$idioma_nivel_escrito=utf8_decode($_POST["idioma_nivel_escrito"]);
 		$rut=$_SESSION['$varut'];
 		if(empty($dia)||empty($mes)||empty($año)||empty($nacionalidad)||empty($estado_civil)||empty($salario)||empty($prefijo_celular)||empty($provincia)||empty($ciudad)||empty($calle)||empty($colegio)||empty($liceo)||empty($instituto)||empty($titulo)||empty($nombre_empresa)||empty($actividad_empresa)||empty($puesto)||empty($nivel_experiencia)||empty($desde_mes)||empty($desde_año)||empty($hasta_mes)||empty($hasta_año)||empty($area_puesto)||empty($subarea)||empty($descripcion_responsabilidad)||empty($idioma_lengua)||empty($idioma_nivel_oral)||empty($idioma_nivel_escrito)){	
 			?>
@@ -619,7 +625,7 @@ $rut=$_SESSION['$varut'];
 			"comunas": ["Arica", "Camarones", "Putre", "General Lagos"]
 	},
 		{
-			"NombreRegion": "Tarapacá",
+			"NombreRegion": "Tarapaca",
 			"comunas": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"]
 	},
 		{
@@ -635,43 +641,45 @@ $rut=$_SESSION['$varut'];
 			"comunas": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"]
 	},
 		{
-			"NombreRegion": "Valparaíso",
+			"NombreRegion": "Valparaiso",
 			"comunas": ["Valparaíso", "Casablanca", "Concón", "Juan Fernández", "Puchuncaví", "Quintero", "Viña del Mar", "Isla de Pascua", "Los Andes", "Calle Larga", "Rinconada", "San Esteban", "La Ligua", "Cabildo", "Papudo", "Petorca", "Zapallar", "Quillota", "Calera", "Hijuelas", "La Cruz", "Nogales", "San Antonio", "Algarrobo", "Cartagena", "El Quisco", "El Tabo", "Santo Domingo", "San Felipe", "Catemu", "Llaillay", "Panquehue", "Putaendo", "Santa María", "Quilpué", "Limache", "Olmué", "Villa Alemana"]
 	},
+
 		{
-			"NombreRegion": "Región del Libertador Gral. Bernardo O’Higgins",
+			"NombreRegion": "Region del Libertador Gral Bernardo OHiggins",
 			"comunas": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"]
 	},
+		
 		{
-			"NombreRegion": "Región del Maule",
+			"NombreRegion": "Region del Maule",
 			"comunas": ["Talca", "ConsVtución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "ReVro", "San Javier", "Villa Alegre", "Yerbas Buenas"]
 	},
 		{
-			"NombreRegion": "Región del Biobío",
+			"NombreRegion": "Region del Biobio",
 			"comunas": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío", "Chillán", "Bulnes", "Cobquecura", "Coelemu", "Coihueco", "Chillán Viejo", "El Carmen", "Ninhue", "Ñiquén", "Pemuco", "Pinto", "Portezuelo", "Quillón", "Quirihue", "Ránquil", "San Carlos", "San Fabián", "San Ignacio", "San Nicolás", "Treguaco", "Yungay"]
 	},
 		{
-			"NombreRegion": "Región de la Araucanía",
+			"NombreRegion": "Region de la Araucania",
 			"comunas": ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria", ]
 	},
 		{
-			"NombreRegion": "Región de Los Ríos",
+			"NombreRegion": "Region de Los Rios",
 			"comunas": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"]
 	},
 		{
-			"NombreRegion": "Región de Los Lagos",
+			"NombreRegion": "Region de Los Lagos",
 			"comunas": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "FruVllar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"]
 	},
 		{
-			"NombreRegion": "Región Aisén del Gral. Carlos Ibáñez del Campo",
+			"NombreRegion": "Region Aisen del Gral. Carlos Ibañez del Campo",
 			"comunas": ["Coihaique", "Lago Verde", "Aisén", "Cisnes", "Guaitecas", "Cochrane", "O’Higgins", "Tortel", "Chile Chico", "Río Ibáñez"]
 	},
 		{
-			"NombreRegion": "Región de Magallanes y de la AntárVca Chilena",
+			"NombreRegion": "Region de Magallanes y de la AntarVca Chilena",
 			"comunas": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos (Ex Navarino)", "AntárVca", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
 	},
 		{
-			"NombreRegion": "Región Metropolitana de Santiago",
+			"NombreRegion": "Region Metropolitana de Santiago",
 			"comunas": ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "TilVl", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
 	}]
 }

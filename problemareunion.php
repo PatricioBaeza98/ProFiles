@@ -51,7 +51,7 @@ $rut=$_SESSION['$varut'];
 	<header>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 			<div class="container">
-				<a href="empresa.php" class="navbar-brand">
+				<a href="cliente.php" class="navbar-brand">
             <?php if($sex=="Masculino"){
             ?> Bienvenido
             <?php
@@ -88,7 +88,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -129,6 +129,7 @@ $rut=$_SESSION['$varut'];
             <div class="col-9">
                 <select name="motivo" class="form-control">
                   <option value="" disabled selected>Opción</option>
+                  <option value="Reunion Aceptada">Reunion Aceptada</option>
                   <option value="Problemas con la hora">Problemas con la hora</option>
                   <option value="Problemas con la fecha">Problemas con la fecha</option>
                   <option value="De Otra Ciudad">De Otra Ciudad</option>

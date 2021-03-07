@@ -6,29 +6,26 @@ session_start();?>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<title>Index</title>
+	<title>ProFiles</title>
 </head>
 <body>
 	
-		<header>
+	<header>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 			<div class="container">
-				<a href="#" class="navbar-brand">ProFiles</a>
+				<a href="index.php" class="navbar-brand">ProFiles</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menuNavegacion" aria-controls="menuNavegacion" aria-expanded="false" aria-label="Alternar Menu">
 					<span class="navbar-toggler-icon"></span>
 				</button>
-
+					
 				<div class="collapse navbar-collapse" id="menuNavegacion">
 					<ul class="navbar-nav mr-auto">
 						<li class="nav-item">
-							<a href="principal.php" class="nav-link">Inicio</a>
-						</li>
-						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Terminos</a>
+							<a href="registro.php" class="nav-link">Registro</a>
 						</li>
 					</ul>
 
-					<form class="form-inline my-2 my-lg-0" method="post">
+					<form class="form-inline my-2 my-lg-0" method="post" action="validar.php">
 						<input type="text" name="usuario" class="form-control mr-sm-2" type="text" placeholder="Usuario o Correo">
 						<input type="password" name="contraseña" class="form-control mr-sm-2" type="password" placeholder="Contraseña">
 						<button class="btn btn-primary my-2 my-sm-0" type="submit" name="btnentrar">Iniciar Sesión</button>
@@ -146,35 +143,18 @@ session_start();?>
 				</div>
 			</div>
 
-			<div class="col-12 col-sm-6 col-lg-3 mb-4">
-				<div class="card">
-					<img class="card-img-top" src="img/Nicolas.jpg" alt="">
-					<div class="card-body">
-						<h4 class="card-title">Nicolas Muñoz</h4>
-						<p class="card-text">Se desempeña como Ingeniero en informatica, y es el encargado de Frontend.</p>
-					</div>
-				</div>
-			</div>
-
+			
 			<div class="col-12 col-sm-6 col-lg-3 mb-4">
 				<div class="card">
 					<img class="card-img-top" src="img/Sebastian.jpg" alt="Sebastian Valenzuela">
 					<div class="card-body">
-						<h4 class="card-title">Sebastian Valenzu..</h4>
+						<h4 class="card-title">Sebastian Valenzuela</h4>
 						<p class="card-text">Se desempeña como Ingeniero en informatica, y es el encargado de backend.</p>
 					</div>
 				</div>
 			</div>
 
-			<div class="col-12 col-sm-6 col-lg-3 mb-4">
-				<div class="card">
-					<img class="card-img-top" src="img/Felipe.jpg" alt="">
-					<div class="card-body">
-						<h4 class="card-title">Felipe Rodriguez</h4>
-						<p class="card-text">Se desempeña como Ingeniero en informatica, y es el encargado de diseño.</p>
-					</div>
-				</div>
-			</div>
+			
 		</div>
 
 		<div class="row">
@@ -206,7 +186,7 @@ session_start();?>
 		<div class="row">
 			<div class="col-sm">
 				<p class="text-center">
-					Contáctanos y en breve atenderemos su Consulta. Puede hacerlo a través de las distintas redes sociales o completando este formulario.
+					Contáctanos y en breve atenderemos su Consulta.
 				</p>
 			</div>
 		</div>
@@ -216,13 +196,13 @@ session_start();?>
 				<div class="col-sm">
 					<div class="form-group">
     					<label for="exampleFormControlInput1">Nombre</label>
-    					<input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nombre">
+    					<input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nombre" name="nom">
   					</div>
 				</div>
 				<div class="col-sm">
 					<div class="form-group">
     					<label for="exampleFormControlInput1">Apellido</label>
-    					<input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Apellido">
+    					<input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Apellido" name="ape">
   					</div>
 				</div>
 			</div>
@@ -230,21 +210,21 @@ session_start();?>
 				<div class="col-sm">
 					 <div class="form-group">
     					<label for="exampleFormControlInput1">Correo Electronico</label>
-    					<input type="email" class="form-control" id="exampleFormControlInput1" placeholder="correo@example.com">
+    					<input type="email" class="form-control" id="exampleFormControlInput1" placeholder="correo@example.com" name="corr">
   					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm">
 					<div class="form-group">
-					    <label for="exampleFormControlTextarea1">Mensaje Mensaje</label>
-					    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+					    <label for="exampleFormControlTextarea1">Mensaje</label>
+					    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="msj"></textarea>
  					 </div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm">
-					<button type="button" class="btn btn-primary btn-lg btn-block" name="boton.mensaje">Enviar Mensaje</button>
+					<input type="submit" name="enviar" value="Enviar" class="btn btn-primary btn-lg btn-block">
 				</div>
 			</div>
 		</form>
@@ -253,11 +233,29 @@ session_start();?>
 	<br>
 	<br>
 
+
+		<?php 
+		if($_POST['enviar']=="Enviar"){
+
+			$nombre=utf8_decode($_POST["nom"]);
+			$apellido=utf8_decode($_POST["ape"]);
+			$correo=utf8_decode($_POST["corr"]);
+			$msj=utf8_decode($_POST["msj"]);
+
+			$insertar="INSERT INTO msj_index (nombre,apellido,correo,msj) VALUES ('$nombre','$apellido','$correo','$msj')";
+			mysqli_query($cnn,$insertar);
+			echo "<script>alert('Se ha enviado correctamente.')</script>";
+
+		}
+
+		?>
+
+
+
 	<footer class="container">
 		<div class="row border-top py-5">
 			<div class="col">
-				<h3 class="lead">ProFiles.com</h3>
-				<a href="acerca.php" class="btn btn-link">Acerca de</a>
+				<h3 class="lead">profiles.empresa@gmail.com</h3>
 			</div>
 			<div class="col text-right">
 				<a href="#" class="btn btn-link">Subir en Pagina</a>
@@ -271,33 +269,6 @@ session_start();?>
 
 
 
-	<?php
-	if(isset($_POST["btnentrar"])){
-		$Usuario=$_POST["usuario"];
-		$Contraseña=$_POST["contraseña"];
-		$sql="SELECT usuario.usua,usuario.rut,usuario.nombre,usuario.pass,usuario.correo,tipos_usu.tipo_usuario FROM usuario,tipos_usu WHERE (tipos_usu.id=usuario.tipo) AND (usuario.correo='$Usuario' or usuario.usua='$Usuario') AND (usuario.pass='$Contraseña')";
-    		$rs=mysqli_query($cnn,$sql);
-    		if (mysqli_num_rows($rs)!=0) {
-    			if ($row=mysqli_fetch_array($rs)) {
-    				$_SESSION['$varut'] = $row['rut'];
-    				$_SESSION['$vanombre'] = $row['nombre'];
-    				$_SESSION['$vatipo'] = $row['tipo_usuario'];
-    				switch($_SESSION['$vatipo']){
-    					case "Empresa":
-    					echo "<script type='text/javascript'>window.location='empresa.php'</script>";
-    					break;
-    					case "Cliente":
-      		 		echo "<script type='text/javascript'>window.location='cliente.php'</script>";
-      		 	break;
-      		 	default:
-      		 		echo "<script>alert('Usted no es Usuario, Por favor Registrese')</script>";
-      		 			echo "<script type='text/javascript'>window.location='principal.php'</script>";
-      		 	break;
-    				}
-    			}
-    		}
-	}
-
-	?>
+	
 </body>
 </html>

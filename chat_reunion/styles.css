@@ -1,0 +1,92 @@
+body{
+	padding: 0;
+	margin: 0;
+	font-family: sans-serif;
+	background: #AAA3A3; /*34495e*/
+	color: white;
+}
+#contenedor_2{
+	width: 300px;
+	padding: 10px;
+	position: absolute;
+	left: 50%;
+	background: #191919;
+	transform: translate(-50%);
+}
+img{
+	width: 100%;
+
+}
+img:hover{
+	border: 1px solid;
+	border-color: #00F422;
+}
+h3{
+	text-align: center;
+}
+#contenedor{
+	width: 900px;
+	padding: 40px;
+	position: absolute;
+	top: 60%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	background: #191919;
+}
+
+
+#caja-chat{
+	border:0;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	border:2px solid #3498db;
+	color: white;
+	padding: 16px 12px;
+	width: 800px;
+	outline: none;
+	border-radius: 24px;
+	transition: 0.25s;
+}
+
+textarea{
+	border: 0;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	border:2px solid #3498db;
+	color: white;
+	padding: 16px 12px;
+	width: 750px;
+	outline: none;
+	transition: 0.25s;
+	resize: none;
+	text-align: center;
+}
+
+textarea:focus{
+	width: 800px;
+	border-color: #2ecc71;
+}
+
+#contenedor input[type="submit"]{
+	border:0;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	border:2px solid #2ecc71;
+	color: white;
+	padding: 16px 12px;
+	width: 500px;
+	outline: none;
+	border-radius: 24px;
+	transition: 0.25s;
+	cursor: pointer;
+}
+#contenedor input[type="submit"]:hover{
+	background: #2ecc71;
+	
+}
+#esconder{
+	visibility: hidden;
+}

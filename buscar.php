@@ -16,11 +16,21 @@
 
     $salida = "";
 
-    $query = "SELECT usuario.rut as rut,usuario.nombre as nombre,usuario.apellido as apellido,usuario.correo as correo,cv.salario as salario,cv.actividad_empresa as actividad,cv.puesto as puesto,cv.nivel_experiencia as nivel,test.respuesta as respuesta FROM usuario,test,cv WHERE (test.cv=cv.id) AND (usuario.rut=cv.rut) AND usuario.nombre NOT LIKE '' ORDER By usuario.rut";
+    $query = "SELECT usuario.rut as rut,usuario.nombre as nombre,usuario.apellido as apellido,
+    usuario.correo as correo,cv.salario as salario,cv.actividad_empresa as actividad,
+    cv.puesto as puesto,cv.nivel_experiencia as nivel,test.respuesta as respuesta 
+    FROM usuario,test,cv 
+    WHERE (test.cv=cv.id) AND (usuario.rut=cv.rut) AND usuario.nombre NOT LIKE '' 
+    ORDER By usuario.rut";
 
      if (isset($_POST['consulta'])) {
      $q = $conn->real_escape_string($_POST['consulta']); 
-     $query = "SELECT usuario.rut as rut,usuario.nombre as nombre,usuario.apellido as apellido,usuario.correo as correo,cv.salario as salario,cv.actividad_empresa as actividad,cv.puesto as puesto,cv.nivel_experiencia as nivel,test.respuesta as respuesta FROM usuario,test,cv WHERE (test.cv=cv.id) AND (usuario.rut=cv.rut) AND (usuario.nombre LIKE '%".$q."%'  OR usuario.rut LIKE '%".$q."%' )  ";   
+     $query = "SELECT usuario.rut as rut,usuario.nombre as nombre,
+     usuario.apellido as apellido,usuario.correo as correo,cv.salario as salario,
+     cv.actividad_empresa as actividad,cv.puesto as puesto,cv.nivel_experiencia as nivel,
+     test.respuesta as respuesta 
+     FROM usuario,test,cv
+    WHERE (test.cv=cv.id) AND (usuario.rut=cv.rut) AND (cv.actividad_empresa LIKE '%".$q."%'  OR cv.puesto LIKE '%".$q."%' )  ";   
      }
    
 
@@ -43,7 +53,7 @@
                             <th>Salario</th>
                             <th>Actividad</th>
                             <th>Puesto</th>
-                            <th>Test</th>
+                            <th>Personalidad</th>
                         </tr>
                     </thead>
             <tbody>";
@@ -63,7 +73,7 @@
         }
         $salida.="</tbody></table></div></div></form>";
     }else{
-        $salida.="Solo Busqueda por nombre Usuario o rut";
+        $salida.="Solo Busqueda por Actividad o Puesto.";
     }
 
 

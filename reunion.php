@@ -1,8 +1,11 @@
 <?php
 ob_start();
+session_start();
+if(!isset($_SESSION['$varut'])){
+  header('Location:index.php');
+}
 include("funciones.php");
- error_reporting(0); 
- session_start();
+error_reporting(0); 
 $cnn=Conectar();
 $rut=$_SESSION['$varut'];
 $sql="SELECT rut,nombre,apellido,correo,telefono,sexo,usua,pass,ruta_imagen from usuario WHERE rut='$rut'";
@@ -66,20 +69,24 @@ $rut=$_SESSION['$varut'];
 				</button>
 
 				<div class="collapse navbar-collapse" id="menuNavegacion">
-					<ul class="navbar-nav mr-auto">
-						<li class="nav-item">
-							<a href="test.php" class="nav-link">Test de personalidad</a>
-						</li>
-						<li class="nav-item">
-							<a href="curriculum.php" class="nav-link">Mi curriculum</a>
-						</li>
-						<li class="nav-item">
-							<a href="misofertas.php" class="nav-link">Mis ofertas</a>
-						</li>
-						<li class="nav-item">
-							<a href="reunion.php" class="nav-link">Mis Reuniones</a>
-						</li>
-					</ul>
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a href="test.php" class="nav-link">Test de personalidad</a>
+            </li>
+            <li class="nav-item">
+              <a href="curriculum.php" class="nav-link">Mi curriculum</a>
+            </li>
+            <li class="nav-item">
+              <a href="misofertas.php" class="nav-link">Mis ofertas</a>
+            </li>
+            <li class="nav-item">
+              <a href="reunion.php" class="nav-link">Mis Reuniones</a>
+            </li>
+              <li class="nav-item">
+              <a href="cliente_tips.php" class="nav-link" style="color: #2EFE2E">Consejos PROFILES</a>
+            </li>
+          </ul>
+
 
 					<form class="form-inline my-2 my-lg-0" method="post">
 						<button class="btn btn-primary my-2 my-sm-0" type="submit" name="btncerrar">Cerrar Sesión</button>
@@ -88,7 +95,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -113,12 +120,14 @@ $rut=$_SESSION['$varut'];
       </div>
       <?php 
         $rut=$_SESSION['$varut'];   
-        $sql="SELECT reunion.id as id,reunion.fecha as fecha,reunion.hora as hora,reunion.ciudad as ciudad,reunion.direccion as direccion,usuario.nombre_empresa as nomb,ofertas_laborales.titulo as titulo
+        $sql="SELECT reunion.id as id,reunion.fecha as fecha,reunion.hora as hora,reunion.ciudad as ciudad,
+        reunion.direccion as direccion,usuario.nombre_empresa as nomb,ofertas_laborales.titulo as titulo,usuario.rut as rut_empresa,reunion.motivo
             FROM reunion,seleccion,ofertas_laborales,usuario
             where (reunion.id_trabajo_seleccionado=seleccion.id) AND (seleccion.id_oferta=ofertas_laborales.id) AND (seleccion.rut_empresa=usuario.rut) AND (seleccion.rut_cv='$rut') AND (ofertas_laborales.estado='activa')";
          mysqli_query($cnn,$sql);
          $rs=mysqli_query($cnn,$sql); 
           while($row=mysqli_fetch_assoc($rs)){
+            $id_reunion=$row["id"];
             $fecha = date_create($row["fecha"]);
             $hora = date_create($row["hora"]);
             $ciudad=$row["ciudad"];
@@ -137,7 +146,9 @@ $rut=$_SESSION['$varut'];
                     <th>Dirección</th>
                     <th>Nombre Empresa</th>
                     <th>Nombre Postulación</th>
-                    <th>¿Problemas?</th>
+                    <th>Confirmar o Corregir</th>
+                    <th>Mensaje</th>
+                    <th>CHAT</th>
                   </tr>
                 </thead>
                 <tr>
@@ -145,9 +156,11 @@ $rut=$_SESSION['$varut'];
                   <td><?php echo date_format($hora, 'g:i A');?></td>
                   <td><?php echo utf8_encode($ciudad)?></td>
                   <td><?php echo($row['direccion']);?></td>
-                  <td><?php echo($row['nomb']);?></td>
+                  <td><a href="miperfil_empresa.php?empresa=<?php echo($row['rut_empresa']);?>" style="color:black;"><?php echo($row['nomb']);?></a></td>
                   <td><?php echo($row['titulo']);?></td>
-                  <td><a href="problemareunion.php?id=<?php echo($row['id']);?>">Problema</a></td>
+                  <td><a href="problemareunion.php?id=<?php echo($row['id']);?>"> ENTRAR </a></td>
+                  <td><p><?php echo($row['motivo']);?></p></td>
+                  <td><a href="chat_reunion/index.php?id=<?php echo $id_reunion;?>"><img src="img/chat.png" alt=""></a></td>
                 </tr>
               </table>
             </div>

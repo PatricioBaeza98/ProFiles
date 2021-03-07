@@ -16,12 +16,12 @@
 
     $salida = "";
 
-    $query = "SELECT ofertas_laborales.id,ofertas_laborales.rut_empresa,ofertas_laborales.titulo,ofertas_laborales.nombre_empresa,ofertas_laborales.descripcion_trabajo,ofertas_laborales.lugar_trabajo,ofertas_laborales.fecha_publicacion,ofertas_laborales.salario,ofertas_laborales.tipo_puesto,ofertas_laborales.area,usuario.ruta_imagen
+    $query = "SELECT usuario.rut,ofertas_laborales.id,ofertas_laborales.rut_empresa,ofertas_laborales.titulo,ofertas_laborales.nombre_empresa,ofertas_laborales.descripcion_trabajo,ofertas_laborales.lugar_trabajo,ofertas_laborales.fecha_publicacion,ofertas_laborales.salario,ofertas_laborales.tipo_puesto,ofertas_laborales.area,usuario.ruta_imagen
                   FROM ofertas_laborales,usuario WHERE (ofertas_laborales.rut_empresa=usuario.rut) AND (ofertas_laborales.estado='activa')";
 
      if (isset($_POST['consulta'])) {
      $q = $conn->real_escape_string($_POST['consulta']); 
-     $query = "SELECT ofertas_laborales.id,ofertas_laborales.rut_empresa,ofertas_laborales.titulo,ofertas_laborales.nombre_empresa,ofertas_laborales.descripcion_trabajo,ofertas_laborales.lugar_trabajo,ofertas_laborales.fecha_publicacion,ofertas_laborales.salario,ofertas_laborales.tipo_puesto,ofertas_laborales.area,usuario.ruta_imagen
+     $query = "SELECT usuario.rut,ofertas_laborales.id,ofertas_laborales.rut_empresa,ofertas_laborales.titulo,ofertas_laborales.nombre_empresa,ofertas_laborales.descripcion_trabajo,ofertas_laborales.lugar_trabajo,ofertas_laborales.fecha_publicacion,ofertas_laborales.salario,ofertas_laborales.tipo_puesto,ofertas_laborales.area,usuario.ruta_imagen
                   FROM ofertas_laborales,usuario WHERE (ofertas_laborales.rut_empresa=usuario.rut) AND (ofertas_laborales.estado='activa') AND (ofertas_laborales.titulo LIKE '%".$q."%' OR ofertas_laborales.lugar_trabajo LIKE '%".$q."%'  OR ofertas_laborales.nombre_empresa LIKE '%".$q."%')";   
      }
    

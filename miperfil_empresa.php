@@ -1,7 +1,10 @@
 <?php ob_start();
+session_start();
+if(!isset($_SESSION['$varut'])){
+	header('Location:index.php');
+}
 include("funciones.php");
- error_reporting(0); 
- session_start();
+error_reporting(0); 
 $cnn=Conectar();
 $rut=$_SESSION['$varut'];
 $sql="SELECT rut,nombre,apellido,correo,telefono,sexo,usua,pass,ruta_imagen from usuario WHERE rut='$rut'";
@@ -35,7 +38,6 @@ $row=mysqli_fetch_assoc($rs);
 </head>
 <style>
 	.portada{
-		background: red;
 		position: relative;
 		right: 16px;
 		bottom: 15px;
@@ -114,7 +116,7 @@ $rut=$_SESSION['$varut'];
                   if (isset($_POST["btncerrar"])) {
                     session_start();
                     session_destroy();
-                    header("Location:principal.php");
+                    header("Location:index.php");
                     }
                 ?>
         </div>
@@ -126,7 +128,7 @@ $rut=$_SESSION['$varut'];
 	<?php 
 	$empresa=$_GET["nombre"];
 	$rut_empresa=$_GET["empresa"];
-	$traer_datos="SELECT nombre_empresa,puesto,Direccion,ruta_imagen as empresa_foto
+	$traer_datos="SELECT nombre_empresa,puesto,Direccion,ruta_imagen as empresa_foto,portada_empresa
 					FROM usuario
 					WHERE rut='$rut_empresa'";
 	$resultado=mysqli_query($cnn,$traer_datos);
@@ -135,13 +137,14 @@ $rut=$_SESSION['$varut'];
 		$puesto=$row1["puesto"];
 		$Direccion=$row1["Direccion"];
 		$foto_empresa=$row1["empresa_foto"];
+		$portada_empresa=$row1["portada_empresa"];
 	}	
 	?>
 	<form method="GET">
 		<div class="container">
 			<div class="caja shadow p-3 mb-5">
 			<div class="portada">
-				<img src="img/portada.jpg" class="foto_portada">
+				<img src="<?php echo utf8_encode($portada_empresa); ?>" class="foto_portada">
 			</div>
 			<hr>
 			<div class="perfil">

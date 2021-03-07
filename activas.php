@@ -1,4 +1,9 @@
-<?php ob_start(); include("funciones.php"); error_reporting(0); session_start();$cnn=Conectar(); 
+<?php ob_start(); 
+session_start();
+if(!isset($_SESSION['$varut'])){
+	header('Location:index.php');
+}
+include("funciones.php"); error_reporting(0); $cnn=Conectar(); 
 $rut=$_SESSION['$varut']; $sql = "SELECT nombre_empresa  FROM usuario WHERE rut='$rut'";
 $rs=mysqli_query($cnn,$sql);  
 if (mysqli_num_rows($rs)!=0){
@@ -91,7 +96,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -119,7 +124,7 @@ $rut=$_SESSION['$varut'];
 			<div class="col-12 ">
 				<div class="row">
 					<div class="col-12 titulo">
-						<h2 class="center">Publicaciones</h2>
+						<h2 class="center">Publicaciones Activadas</h2>
 					</div>
 				</div>
 				<div class="row">

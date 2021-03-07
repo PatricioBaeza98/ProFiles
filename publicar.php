@@ -1,4 +1,9 @@
-<?php ob_start(); include("funciones.php"); error_reporting(0); session_start();$cnn=Conectar(); 
+<?php ob_start(); 
+session_start();
+if(!isset($_SESSION['$varut'])){
+	header('Location:index.php');
+}
+include("funciones.php"); error_reporting(0); $cnn=Conectar(); 
 $rut=$_SESSION['$varut']; $sql = "SELECT nombre_empresa  FROM usuario WHERE rut='$rut'";
 $rs=mysqli_query($cnn,$sql);  
 if (mysqli_num_rows($rs)!=0){
@@ -71,10 +76,10 @@ $rut=$_SESSION['$varut'];
 							<a href="seleccionar.php" class="nav-link">Seleccionados</a>
 						</li>
 						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Quitar Seleccionados</a>
+							<a href="eliminarseleccion.php" class="nav-link">Quitar Seleccionados</a>
 						</li>
 						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Reunion</a>
+							<a href="agendarreunion.php" class="nav-link">Reunion</a>
 						</li>
 						<li class="nav-item">
 							<a href="publicar.php" class="nav-link">Publicar Trabajo</a>
@@ -84,6 +89,7 @@ $rut=$_SESSION['$varut'];
 						</li>
 					</ul>
 
+
 					<form class="form-inline my-2 my-lg-0" method="post">
 						<button class="btn btn-primary my-2 my-sm-0" type="submit" name="btncerrar">Cerrar Sesión</button>
 					</form>
@@ -91,7 +97,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>

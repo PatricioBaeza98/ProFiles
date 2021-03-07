@@ -1,8 +1,11 @@
 <?php
 ob_start();
+session_start();
+if(!isset($_SESSION['$varut'])){
+  header('Location:index.php');
+}
 include("funciones.php");
- error_reporting(0); 
- session_start();
+error_reporting(0); 
 $cnn=Conectar();
 $rut=$_SESSION['$varut'];
 $sql="SELECT rut,nombre,apellido,correo,telefono,sexo,usua,pass,ruta_imagen from usuario WHERE rut='$rut'";
@@ -61,21 +64,23 @@ $rut=$_SESSION['$varut'];
 				</button>
 
 				<div class="collapse navbar-collapse" id="menuNavegacion">
-					<ul class="navbar-nav mr-auto">
-						<li class="nav-item">
-							<a href="test.php" class="nav-link">Test de personalidad</a>
-						</li>
-						<li class="nav-item">
-							<a href="curriculum.php" class="nav-link">Mi curriculum</a>
-						</li>
-						<li class="nav-item">
-							<a href="misofertas.php" class="nav-link">Mis ofertas</a>
-						</li>
-						<li class="nav-item">
-							<a href="reunion.php" class="nav-link">Mis Reuniones</a>
-						</li>
-					</ul>
-
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a href="test.php" class="nav-link">Test de personalidad</a>
+            </li>
+            <li class="nav-item">
+              <a href="curriculum.php" class="nav-link">Mi curriculum</a>
+            </li>
+            <li class="nav-item">
+              <a href="misofertas.php" class="nav-link">Mis ofertas</a>
+            </li>
+            <li class="nav-item">
+              <a href="reunion.php" class="nav-link">Mis Reuniones</a>
+            </li>
+            <li class="nav-item">
+              <a href="cursos.php" class="nav-link">Cursos PROFILES</a>
+            </li>
+          </ul>
 					<form class="form-inline my-2 my-lg-0" method="post">
 						<button class="btn btn-primary my-2 my-sm-0" type="submit" name="btncerrar">Cerrar Sesión</button>
 					</form>
@@ -83,7 +88,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -240,8 +245,8 @@ $rut=$_SESSION['$varut'];
       <?php
       }else{
       ?>
-        <h2 class="center"><?php echo $_SESSION['$vanombre']?>, Usted ya ingreso su test Correctamente, Por favor espere a que alguna empresa se ponga en contacto con usted.</h2> <br>
-        <h2 class="center">Para saber si tiene alguna oferta Laboral diríjase a la parte superior en Mis Ofertas Laborales o haciendo Click <a href="misofertas.php">Aqui</a></h2>  
+        <h3 class="center"><?php echo $_SESSION['$vanombre']?>, Usted ya ingreso su test Correctamente, Por favor espere a que alguna empresa se ponga en contacto con usted.</h3> <br>
+        <h3 class="center">Para saber si tiene alguna oferta Laboral diríjase a la parte superior en Mis Ofertas Laborales o haciendo Click <a href="misofertas.php">Aqui</a></h3>  
       <?php
         }
       }  
@@ -317,6 +322,7 @@ $rut=$_SESSION['$varut'];
 		<div class="row border-top py-5">
 			<div class="col text-right">
 				<a href="#" class="btn btn-link">Subir en Pagina</a>
+        <p>© 2019 Realizado por NOMBREAUTOR Todos los derechos reservados.</p>
 			</div>
 		</div>
 	</footer>

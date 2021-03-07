@@ -1,8 +1,11 @@
 <?php
 ob_start();
+session_start();
+if(!isset($_SESSION['$varut'])){
+	header('Location:index.php');
+}
 include("funciones.php");
- error_reporting(0); 
- session_start();
+error_reporting(0); 
 $cnn=Conectar();
 $rut=$_SESSION['$varut'];
 $sql="SELECT rut,nombre,apellido,correo,telefono,sexo,usua,pass,ruta_imagen from usuario WHERE rut='$rut'";
@@ -33,6 +36,14 @@ $row=mysqli_fetch_assoc($rs);
         event.returnValue=false;
       }
     </script>
+
+   <!-- <script type="text/javascript">
+        if(history.forward(1)){
+            location.replace(history.forward(1));
+        }
+    </script>  -->
+
+    
 </head>
 <body>
 <?php
@@ -46,7 +57,7 @@ $rut=$_SESSION['$varut'];
 	<header>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 			<div class="container">
-				<a href="empresa.php" class="navbar-brand">
+				<a href="cliente.php" class="navbar-brand">
             <?php if($sex=="Masculino"){
             ?> Bienvenido
             <?php
@@ -74,6 +85,9 @@ $rut=$_SESSION['$varut'];
 						<li class="nav-item">
 							<a href="reunion.php" class="nav-link">Mis Reuniones</a>
 						</li>
+						<li class="nav-item">
+							<a href="cursos.php" class="nav-link">Cursos PROFILES</a>
+						</li>
 					</ul>
 
 					<form class="form-inline my-2 my-lg-0" method="post">
@@ -83,7 +97,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -131,7 +145,7 @@ $rut=$_SESSION['$varut'];
 												<img class="card-img-top" src="<?php echo($fi['ruta_imagen']);?>" alt="">
 												<div class="card-body">
 													<span>Cargar Foto</span>
-                     								 <input type="file" name="foto">
+                     								<input type="file" name="foto">
 												</div>
 											</div>
 											<br>
@@ -177,15 +191,15 @@ $rut=$_SESSION['$varut'];
 													<div class="col-sm">
 														<div class="form-group">
 														    <label for="exampleFormControlInput1">Usuario</label>
-														    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="usuario" name="usuario" value="<?php echo($row['usua']);?>">
+														    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="usuario" name="usuario" value="<?php echo($row['usua']);?>" readonly>
 														</div>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-sm">
 														<div class="form-group">
-														    <label for="exampleFormControlInput1">Contraseña</label>
-														    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="••••••••" name="Contraseña"
+														    <label for="exampleFormControlInput1">Nueva Contraseña</label>
+														    <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="••••••••" name="Contraseña"
 														    value="<?php echo($row['pass']);?>">
 														</div>
 													</div>
@@ -193,11 +207,12 @@ $rut=$_SESSION['$varut'];
 												<div class="row">
 													<div class="col-sm">
 														<div class="form-group">
-														    <label for="exampleFormControlInput1">Contraseña</label>
-														    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="••••••••" name="RContraseña" value="<?php echo($row['pass']);?>">
+														    <label for="exampleFormControlInput1">Repetir Contraseña</label>
+														    <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="••••••••" name="RContraseña" value="<?php echo($row['pass']);?>">
 														</div>
 													</div>
 												</div>
+												
 										</div>
 								      </div>
 								      <div class="modal-footer">
@@ -209,6 +224,11 @@ $rut=$_SESSION['$varut'];
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<center><a href="ayuda_cliente.php">¿Comó postular?</a></center>
 					</div>
 				</div>
 			</div>
@@ -223,7 +243,7 @@ $rut=$_SESSION['$varut'];
 					</div>
 				</div>
 			</div>
-		</div>	
+		</div>
 	</div>
 
 	<br>
@@ -231,6 +251,9 @@ $rut=$_SESSION['$varut'];
 
 	<footer class="container">
 		<div class="row border-top py-5">
+			<div class="col">
+				<h3 class="lead">Contacto: profiles@gmail.com</h3>
+			</div>
 			<div class="col text-right">
 				<a href="#" class="btn btn-link">Subir en Pagina</a>
 			</div>
@@ -242,7 +265,43 @@ $rut=$_SESSION['$varut'];
 	<script src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/main1.js"></script>
 
+	<?php 
+	 if(isset($_POST["bnteditar"])) 
+  	{
+  			$rut=$_SESSION['$varut'];
+  			$nombre=$_POST["nombre"];
+  			$apellido=$_POST["apellido"];
+  			$correo=$_POST["correo"];
+  			$telefono=$_POST["telefono"];
+  			$contraseña=$_POST["Contraseña"];
+  			$rcontraseña=$_POST["RContraseña"];
+  			$foto=$_FILES["foto"]["name"];
+            $ruta=$_FILES["foto"]["tmp_name"];
+            $destino="fotos/".$foto;
+            $foto_de_cliente = $fi["ruta_imagen"];
+            copy($ruta,$destino);
+  			if($contraseña==$rcontraseña){
+  					if($hay_imagen=$_FILES["foto"]["name"]!=null){
+  						$sql="UPDATE usuario SET nombre='$nombre',apellido='$apellido',correo='$correo',telefono='$telefono',pass='$contraseña',ruta_imagen='$destino' 
+  					WHERE rut='$rut'";
+  					}else{
+  						$sql="UPDATE usuario SET nombre='$nombre',apellido='$apellido',correo='$correo',telefono='$telefono',pass='$contraseña',ruta_imagen='$foto_de_cliente' 
+  					WHERE rut='$rut'";
+  					}
+  				
+  					mysqli_query($cnn,$sql);
+  					if($sql==true){
+  						 header("Location:cliente.php");
+  					}
+  				
+  			}else{
+  				?>
+  				<script>alert('Las contraseñas no coinciden.')</script>
+  				<?php
+  			}
 
+  	} 
+ 	?>
 </body>
 </html>
 <?php

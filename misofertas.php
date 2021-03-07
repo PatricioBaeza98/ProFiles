@@ -1,13 +1,16 @@
 <?php
 ob_start();
+session_start();
+if(!isset($_SESSION['$varut'])){
+  header('Location:index.php');
+}
 include("funciones.php");
- error_reporting(0); 
- session_start();
+error_reporting(0); 
 $cnn=Conectar();
 $rut=$_SESSION['$varut'];
-$sql="SELECT seleccion.id,ofertas_laborales.titulo,ofertas_laborales.descripcion_trabajo,ofertas_laborales.salario,seleccion.test,usuario.ruta_imagen,ofertas_laborales.lugar_trabajo,ofertas_laborales.fecha_publicacion,ofertas_laborales.tipo_puesto,ofertas_laborales.area
-FROM seleccion,ofertas_laborales,usuario
-WHERE (seleccion.id_oferta=ofertas_laborales.id) AND (usuario.rut=ofertas_laborales.rut_empresa) AND (rut_cv='$rut') AND (ofertas_laborales.estado='activa')";
+$sql="SELECT seleccion.id,ofertas_laborales.titulo,ofertas_laborales.descripcion_trabajo,ofertas_laborales.salario,usuario.ruta_imagen,ofertas_laborales.lugar_trabajo,ofertas_laborales.fecha_publicacion,ofertas_laborales.tipo_puesto,ofertas_laborales.area,pruebas.prueba,pruebas.especialidad
+FROM seleccion,ofertas_laborales,usuario,pruebas
+WHERE (seleccion.id_oferta=ofertas_laborales.id) AND  (seleccion.test=pruebas.id) AND(usuario.rut=ofertas_laborales.rut_empresa) AND (rut_cv='$rut') AND (ofertas_laborales.estado='activa')";
 mysqli_query($cnn,$sql);
 $rs=mysqli_query($cnn,$sql);  
 ?>
@@ -80,6 +83,9 @@ $rut=$_SESSION['$varut'];
             <li class="nav-item">
               <a href="reunion.php" class="nav-link">Mis Reuniones</a>
             </li>
+            <li class="nav-item">
+              <a href="cursos.php" class="nav-link">Cursos PROFILES</a>
+            </li>
           </ul>
 
           <form class="form-inline my-2 my-lg-0" method="post">
@@ -89,7 +95,7 @@ $rut=$_SESSION['$varut'];
                   if (isset($_POST["btncerrar"])) {
                     session_start();
                     session_destroy();
-                    header("Location:principal.php");
+                    header("Location:index.php");
                     }
                 ?>
         </div>
@@ -99,6 +105,7 @@ $rut=$_SESSION['$varut'];
   <br>
 <?php
 $rut=$_SESSION['$varut'];
+
 $total = mysqli_num_rows(mysqli_query($cnn,"SELECT rut_cv FROM seleccion WHERE rut_cv='$rut'"));
 if ($total==0) {
   ?>
@@ -116,6 +123,7 @@ while($row=mysqli_fetch_assoc($rs)){
   $id=$row["id"];
   $imagen=$row["ruta_imagen"];
   $fecha = date_create($row["fecha_publicacion"]);
+  $link = $row["prueba"];
  ?>
   <div class='container'>
    <form method="get">
@@ -165,7 +173,7 @@ while($row=mysqli_fetch_assoc($rs)){
             <hr> 
             <div class="row">
               <div class="col-12">
-                <a href="test_sel.php?id=<?php echo($row['id']);?>">Prueba 1</a>
+                <a href="<?php echo($row['prueba']);?>?id=<?php echo($row['id']);?>"><?php echo($row['especialidad']);?></a>
               </div>
             </div> 
           </div>

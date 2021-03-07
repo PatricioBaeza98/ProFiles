@@ -1,8 +1,11 @@
 <?php
 ob_start();
 include("funciones.php");
- error_reporting(0); 
- session_start();
+session_start();
+if(!isset($_SESSION['$varut'])){
+	header('Location:index.php');
+}
+error_reporting(0); 
 $cnn=Conectar();
 $rut=$_SESSION['$varut'];
 $sql="SELECT rut,nombre,apellido,correo,telefono,sexo,usua,pass,ruta_imagen from usuario WHERE rut='$rut'";
@@ -83,7 +86,7 @@ $rut=$_SESSION['$varut'];
                   if (isset($_POST["btncerrar"])) {
                     session_start();
                     session_destroy();
-                    header("Location:principal.php");
+                    header("Location:index.php");
                     }
                 ?>
         </div>
@@ -158,7 +161,7 @@ $rut=$_SESSION['$varut'];
 								<div class="col-8">
 									<p>Descripción del empleo</p>
 									<br>
-<textarea name="descripcion" class="form-control" cols="65" rows="12"><?php echo(trim(utf8_encode($fila['descripcion_trabajo'])));?></textarea>
+<textarea name="descripcion" style="resize: none;" class="form-control" cols="65" rows="12"><?php echo(trim(utf8_encode($fila['descripcion_trabajo'])));?></textarea>
 								</div>
 								<div class="col-4">
 									<div class="row">
@@ -330,7 +333,7 @@ jQuery(document).ready(function () {
 
 	var iRegion = 0;
 	var htmlRegion = '<option value="<?php echo utf8_encode($separar[1]); ?>"><?php echo utf8_encode($separar[1]); ?></option><option value="sin-region">--</option>';
-	var htmlComunas = '<option value="<?php echo $separar[0]; ?>"><?php echo $separar[0]; ?></option><option value="sin-region">--</option>';
+	var htmlComunas = '<option value="<?php echo utf8_encode($separar[0]); ?>"><?php echo utf8_encode($separar[0]); ?></option><option value="sin-region">--</option>';
 
 	jQuery.each(RegionesYcomunas.regiones, function () {
 		htmlRegion = htmlRegion + '<option value="' + RegionesYcomunas.regiones[iRegion].NombreRegion + '">' + RegionesYcomunas.regiones[iRegion].NombreRegion + '</option>';
@@ -343,7 +346,7 @@ jQuery(document).ready(function () {
 	jQuery('#regiones').change(function () {
 		var iRegiones = 0;
 		var valorRegion = jQuery(this).val();
-		var htmlComuna = '<option value="<?php echo $separar[0]; ?>"><?php echo($row['provincia']);?></option><option value="sin-comuna">--</option>';
+		var htmlComuna = '<option value="<?php echo utf8_encode($separar[0]); ?>"><?php echo($row['provincia']);?></option><option value="sin-comuna">--</option>';
 		jQuery.each(RegionesYcomunas.regiones, function () {
 			if (RegionesYcomunas.regiones[iRegiones].NombreRegion == valorRegion) {
 				var iComunas = 0;

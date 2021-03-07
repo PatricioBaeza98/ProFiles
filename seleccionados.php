@@ -1,4 +1,9 @@
-<?php ob_start(); include("funciones.php"); error_reporting(0); session_start();$cnn=Conectar(); 
+<?php ob_start(); 
+session_start();
+if(!isset($_SESSION['$varut'])){
+  header('Location:index.php');
+}
+include("funciones.php"); error_reporting(0); $cnn=Conectar(); 
 $rut=$_SESSION['$varut']; $sql = "SELECT nombre_empresa  FROM usuario WHERE rut='$rut'";
 $rs=mysqli_query($cnn,$sql);  
 if (mysqli_num_rows($rs)!=0){
@@ -69,17 +74,20 @@ $rut=$_SESSION['$varut'];
 							<a href="eliminarpublicacion.php" class="nav-link">Eliminar Publicaciones</a>
 						</li>
 						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Seleccionados</a>
+							<a href="seleccionar.php" class="nav-link">Seleccionados</a>
 						</li>
 						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Quitar Seleccionados</a>
+							<a href="eliminarseleccion.php" class="nav-link">Quitar Seleccionados</a>
 						</li>
 						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Reunion</a>
+							<a href="agendarreunion.php" class="nav-link">Reunion</a>
 						</li>
 						<li class="nav-item">
-							<a href="acerca.php" class="nav-link">Nuevo Trabajo</a>
+							<a href="publicar.php" class="nav-link">Publicar Trabajo</a>
 						</li>
+            <li class="nav-item">
+              <a href="miperfil.php" class="nav-link">Perfil</a>
+            </li>
 					</ul>
 
 					<form class="form-inline my-2 my-lg-0" method="post">
@@ -89,7 +97,7 @@ $rut=$_SESSION['$varut'];
                 	if (isset($_POST["btncerrar"])) {
                 		session_start();
                			session_destroy();
-                		header("Location:principal.php");
+                		header("Location:index.php");
                 		}
             		?>
 				</div>
@@ -98,7 +106,7 @@ $rut=$_SESSION['$varut'];
 	</header>
 	<br>
 	<?php 
-      $consulta = "SELECT usuario.nombre,usuario.ruta_imagen,cv.rut FROM usuario INNER JOIN cv ON usuario.rut=cv.rut INNER JOIN test ON cv.id=test.cv ";
+      $consulta = "SELECT usuario.nombre,usuario.ruta_imagen,cv.rut FROM usuario INNER JOIN cv ON usuario.rut=cv.rut INNER JOIN test ON (cv.id=test.cv) ORDER BY usuario.nombre ";
       $rs2=mysqli_query($cnn,$consulta);
       ?>
 	<form method="GET">
@@ -132,13 +140,26 @@ $rut=$_SESSION['$varut'];
 			</div>
 		</div>
 	</form>
+  <form method="post">
  <?php
         if(isset($_GET["vercv"])){
           $cv = $_GET["CV"];
+          $traerp = "SELECT id,prueba,especialidad FROM pruebas";
+          $rs4=mysqli_query($cnn,$traerp);
+           while($row4=mysqli_fetch_array($rs4)){
+          $id=$row4["id"];
+          $prueba=$row4["prueba"];
+          $especialidad=$row4["especialidad"];
+          }
           $resu = "SELECT usuario.nombre,usuario.apellido,usuario.correo,usuario.telefono,usuario.sexo,usuario.ruta_imagen,cv.salario,cv.provincia,
-            cv.ciudad,cv.calle,cv.colegio,cv.estado_civil,cv.liceo,cv.instituto,cv.titulo,cv.nombre_empresa,cv.actividad_empresa,cv.puesto,cv.nivel_experiencia,cv.area_puesto,cv.subarea,cv.responsabilidades,cv.idioma,cv.nivel_oral,cv.nivel_escrito,cv.desde_mes,cv.desde_anio,cv.hasta_mes,cv.hasta_anio,cv.idioma,cv.nivel_oral,cv.nivel_escrito,cv.nacionalidad,cv.dia,cv.anio,cv.mes,test.respuesta,test.id,cv.prefijo_cel
-          FROM cv,usuario,test
-          WHERE (usuario.rut=cv.rut) AND (test.cv=cv.id) AND (cv.rut='$cv') ";
+            cv.ciudad,cv.calle,cv.colegio,cv.liceo,cv.instituto,cv.titulo,cv.nombre_empresa,
+            cv.actividad_empresa,cv.puesto,cv.nivel_experiencia,cv.area_puesto,cv.subarea,
+            cv.responsabilidades,cv.idioma,cv.nivel_oral,cv.nivel_escrito,cv.desde_mes,
+            cv.desde_anio,cv.hasta_mes,cv.hasta_anio,cv.idioma,cv.nivel_oral,
+            cv.nivel_escrito,cv.nacionalidad,cv.dia,cv.anio,cv.mes,test.respuesta,
+            test.id,cv.prefijo_cel
+             FROM  usuario,cv,test
+             where (usuario.rut=cv.rut) AND (cv.id=test.cv) AND (cv.rut='$cv') ";
           $rs3=mysqli_query($cnn,$resu);
           while ($row3=mysqli_fetch_array($rs3)){
             $nombre=$row3["nombre"];
@@ -177,6 +198,8 @@ $rut=$_SESSION['$varut'];
             $nivel_escrito=$row3["nivel_escrito"];
             $respuesta=$row3["respuesta"];
             $test=$row3["id"];
+            $nombre_curso=$row3["nombre_curso"];
+            $nota_curso=$row3["nota_curso"];
             ?>
               <div class="container">
                 <div class="shadow-lg p-3 mb-5 bg-white rounded">
@@ -264,18 +287,67 @@ $rut=$_SESSION['$varut'];
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-3 p-3 mb-2 bg-primary text-white">
-                      <h5>Enviar Prueba: </h5>
+                    <div class="col-6 p-3 mb-2 bg-primary text-white">
+                      <h5>Cursos PROfiles realizados: </h5>
                     </div>
                   </div>
                   <hr>
-                  <form method="post">
-                    <div class="row">
-                      <div class="col-12 center">
-                        <input class="form-control" name="enviarprueba" type="text" placeholder="Pegar link de la prueba">
+                  <div class="row">
+                    <div class="col-12">
+                      <h6>
+                        <?php
+                         $cv = $_GET["CV"];
+                        $traer_cursos="
+                        SELECT IFNULL(cursos.nombre_curso,'No tienes cursos realizados') as nombre_curso,IFNULL(cursos.nota_curso,'No tienes cursos realizados') as nota_curso,aprobado 
+                        FROM cursos right join cv on (cursos.cv=cv.id)
+                        WHERE (cv.rut='$cv')";
+                         $resultado_curso=mysqli_query($cnn,$traer_cursos);  
+                         while($row5=mysqli_fetch_array($resultado_curso)){
+                          $traerCur = $row5["nombre_curso"];
+                          $nota_curso  = $row5["nota_curso"];
+                         ?>
+                        <b>Curso:</b> <?php echo utf8_encode($traerCur) ?>
+                      </h6>
+                      <h6><b>NOTA:</b> <?php echo utf8_encode($nota_curso) ?></h6>
+                    <?php }?>
+                    </div>
+                  </div>
+
+
+
+
+
+                  <div class="row">
+                    <div class="col-3 p-1 mb-2 bg-primary text-white">
+                      <h5>Seleccionar Prueba: </h5>
+                    </div>
+                  </div>
+
+                      <?php 
+                      
+                      $traerofertat = "SELECT id,prueba,especialidad FROM pruebas";
+                      $rs3t=mysqli_query($cnn,$traerofertat);
+                      ?>
+                      <div class="row">
+                        <div class="input-field col-12 m6">
+                          <select class="form-control" name="enviarprueba" id="prueba">
+                            <option value="" disabled selected>Seleccionar Prueba</option>
+                        <?php while ($row3t = mysqli_fetch_array($rs3t)){
+                        $id_t = $row3t["id"];
+                        $prueba_t=$row3t["prueba"];
+                        $especialidad_t=$row3t["especialidad"];
+                      ?>
+                      <option  value="<?php echo ($id_t);?>"><?php echo ($especialidad_t);?></option>
+                      <?php
+                      }
+                      ?>     
+                      </select>
                       </div>
-                   </div>
-                   <br>
+                    </div>
+                    <hr>
+
+
+
                   <div class="row">
                     <div class="col-5 p-3 mb-2 bg-primary text-white">
                       <h5>Seleccionar Oferta laboral: </h5>
@@ -311,7 +383,6 @@ $rut=$_SESSION['$varut'];
                         </button>
                       </div>
                     </div>
-                  </form>
                   </form>
                 </div>
               </div>
